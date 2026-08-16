@@ -7,13 +7,13 @@ import java.util.*;
 
 public class NumberCombiner {
     static private CountdownNumber
-            a = new CountdownNumber(1),
-            b = new CountdownNumber(2),
-            c = new CountdownNumber(25),
-            d = new CountdownNumber(100),
-            e = new CountdownNumber(75),
-            f = new CountdownNumber(50);
-    static private CountdownNumber target = new CountdownNumber(940);
+            a = new CountdownNumber(25),
+            b = new CountdownNumber(4),
+            c = new CountdownNumber(6),
+            d = new CountdownNumber(8),
+            e = new CountdownNumber(2),
+            f = new CountdownNumber(10);
+    static private CountdownNumber target = new CountdownNumber(743);
 
     public static void main(String[] args) {
 
@@ -29,26 +29,26 @@ public class NumberCombiner {
 
          */
 
-
-        abcdef(a, b, c, d, e, f);
-        ab_cd_ef(a, b, c, d, e, f);
-        a_bc_d_ef(a, b, c, d, e, f);
-        ab_c_de_f(a, b, c, d, e, f);
-        a_bc_de_f(a, b, c, d, e, f);
-        ab_cd_e_f(a, b, c, d, e, f);
-        ab_c_d_ef(a, b, c, d, e, f);
-    }
-
-    public static void abcdef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
         IGenerator<List<CountdownNumber>> permutations = Generator.permutation(a, b, c, d, e, f).simple();
 
         for (List<CountdownNumber> list : permutations) {
-            for (List<CountdownNumber> firstLevel: reduce(list)) {
-                for(List<CountdownNumber> secondLevel : reduce(firstLevel)) {
-                    for (List<CountdownNumber> thirdLevel: reduce(secondLevel)) {
-                        for (List<CountdownNumber> fourthLevel : reduce(thirdLevel)) {
-                            calculate(fourthLevel.getFirst(), fourthLevel.getLast());
-                        }
+            abcdef(list);
+            ab_cd_ef(list);
+            a_bc_d_ef(list);
+            ab_c_de_f(list);
+            a_bc_de_f(list);
+            ab_cd_e_f(list);
+            ab_c_d_ef(list);
+        }
+    }
+
+    public static void abcdef(List<CountdownNumber> list) {
+
+        for (List<CountdownNumber> firstLevel: reduce(list)) {
+            for(List<CountdownNumber> secondLevel : reduce(firstLevel)) {
+                for (List<CountdownNumber> thirdLevel: reduce(secondLevel)) {
+                    for (List<CountdownNumber> fourthLevel : reduce(thirdLevel)) {
+                        calculate(fourthLevel.getFirst(), fourthLevel.getLast());
                     }
                 }
             }
@@ -56,99 +56,87 @@ public class NumberCombiner {
 
     }
 
-    public static void ab_cd_ef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
-        IGenerator<List<CountdownNumber>> permutations = Generator.permutation(a, b, c, d, e, f).simple();
+    public static void ab_cd_ef(List<CountdownNumber> list) {
 
-        for(List<CountdownNumber> permutation : permutations) {
-            List<CountdownNumber> firstTwo = new ArrayList<>();
-            List<CountdownNumber> secondTwo = new ArrayList<>();
-            List<CountdownNumber> thirdTwo = new ArrayList<>();
-            firstTwo.add(permutation.getFirst());
-            firstTwo.add(permutation.get(1));
-            secondTwo.add(permutation.get(2));
-            secondTwo.add(permutation.get(3));
-            thirdTwo.add(permutation.get(4));
-            thirdTwo.add(permutation.get(5));
+        List<CountdownNumber> firstTwo = new ArrayList<>();
+        List<CountdownNumber> secondTwo = new ArrayList<>();
+        List<CountdownNumber> thirdTwo = new ArrayList<>();
+        firstTwo.add(list.getFirst());
+        firstTwo.add(list.get(1));
+        secondTwo.add(list.get(2));
+        secondTwo.add(list.get(3));
+        thirdTwo.add(list.get(4));
+        thirdTwo.add(list.get(5));
 
-            List<CountdownNumber> reduced = reduce(firstTwo, secondTwo, thirdTwo);
-        }
+        List<CountdownNumber> reduced = reduce(firstTwo, secondTwo, thirdTwo);
     }
 
-    public static void a_bc_d_ef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
-        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<CountdownNumber> bc = new ArrayList<>();
-            List<CountdownNumber> ef = new ArrayList<>();
-            bc.add(permutation.get(1));
-            bc.add(permutation.get(2));
-            ef.add(permutation.get(4));
-            ef.add(permutation.get(5));
+    public static void a_bc_d_ef(List<CountdownNumber> list) {
+        List<CountdownNumber> bc = new ArrayList<>();
+        List<CountdownNumber> ef = new ArrayList<>();
+        bc.add(list.get(1));
+        bc.add(list.get(2));
+        ef.add(list.get(4));
+        ef.add(list.get(5));
 
-            List<CountdownNumber> reduced = reduce(permutation.getFirst(), bc, permutation.get(3), ef);
-        }
+        List<CountdownNumber> reduced = reduce(list.getFirst(), bc, list.get(3), ef);
     }
 
-    public static void ab_c_de_f(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
-        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<CountdownNumber> ab = new ArrayList<>();
-            List<CountdownNumber> de = new ArrayList<>();
-            ab.add(permutation.get(1));
-            ab.add(permutation.get(2));
-            de.add(permutation.get(4));
-            de.add(permutation.get(5));
+    public static void ab_c_de_f(List<CountdownNumber> list) {
+        List<CountdownNumber> ab = new ArrayList<>();
+        List<CountdownNumber> de = new ArrayList<>();
+        ab.add(list.get(1));
+        ab.add(list.get(2));
+        de.add(list.get(4));
+        de.add(list.get(5));
 
-            List<CountdownNumber> reduced = reduce(ab, permutation.get(2), de, permutation.getLast());
-        }
+        List<CountdownNumber> reduced = reduce(ab, list.get(2), de, list.getLast());
     }
 
-    public static void a_bc_de_f(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
-        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<CountdownNumber> bc = new ArrayList<>();
-            List<CountdownNumber> de = new ArrayList<>();
-            bc.add(permutation.get(1));
-            bc.add(permutation.get(2));
-            de.add(permutation.get(3));
-            de.add(permutation.get(4));
+    public static void a_bc_de_f(List<CountdownNumber> list) {
+        List<CountdownNumber> bc = new ArrayList<>();
+        List<CountdownNumber> de = new ArrayList<>();
+        bc.add(list.get(1));
+        bc.add(list.get(2));
+        de.add(list.get(3));
+        de.add(list.get(4));
 
-            List<CountdownNumber> reduced = reduce(permutation.getFirst(), bc, de, permutation.getLast());
-        }
+        List<CountdownNumber> reduced = reduce(list.getFirst(), bc, de, list.getLast());
     }
 
-    public static void ab_cd_e_f(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
-        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<CountdownNumber> ab = new ArrayList<>();
-            List<CountdownNumber> cd = new ArrayList<>();
-            ab.add(permutation.getFirst());
-            ab.add(permutation.get(1));
-            cd.add(permutation.get(2));
-            cd.add(permutation.get(3));
+    public static void ab_cd_e_f(List<CountdownNumber> list) {
+        List<CountdownNumber> ab = new ArrayList<>();
+        List<CountdownNumber> cd = new ArrayList<>();
+        ab.add(list.getFirst());
+        ab.add(list.get(1));
+        cd.add(list.get(2));
+        cd.add(list.get(3));
 
-            List<CountdownNumber> reduced = reduce(ab, cd, permutation.get(4), permutation.getLast());
-        }
+        List<CountdownNumber> reduced = reduce(ab, cd, list.get(4), list.getLast());
     }
 
-    public static void ab_c_d_ef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
-        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<CountdownNumber> ab = new ArrayList<>();
-            List<CountdownNumber> ef = new ArrayList<>();
-            ab.add(permutation.getFirst());
-            ab.add(permutation.get(1));
-            ef.add(permutation.get(4));
-            ef.add(permutation.getLast());
+    public static void ab_c_d_ef(List<CountdownNumber> list) {
+        List<CountdownNumber> ab = new ArrayList<>();
+        List<CountdownNumber> ef = new ArrayList<>();
+        ab.add(list.getFirst());
+        ab.add(list.get(1));
+        ef.add(list.get(4));
+        ef.add(list.getLast());
 
-            List<CountdownNumber> reduced = reduce(ab, permutation.get(2), permutation.get(3), ef);
-        }
+        List<CountdownNumber> reduced = reduce(ab, list.get(2), list.get(3), ef);
     }
 
     public static List<List<CountdownNumber>> reduce(List<CountdownNumber> list) {
+        List<CountdownNumber> listCopy = new ArrayList<>(list);
 
-        List<CountdownNumber> firstGroup = calculate(list.removeFirst(), list.remove(1));
+        List<CountdownNumber> firstGroup = calculate(listCopy.removeFirst(), listCopy.remove(1));
 
         List<List<CountdownNumber>> timelines = new ArrayList<>();
 
         for (CountdownNumber answer : firstGroup) {
             List<CountdownNumber> timeLine = new ArrayList<>();
             timeLine.add(answer);
-            timeLine.addAll(list);
+            timeLine.addAll(listCopy);
             timelines.add(timeLine);
         }
 
@@ -346,13 +334,13 @@ public class NumberCombiner {
         list.add(sum);
         list.add(product);
 
-        if (a.longValue() > b.longValue()) {
+        if (a.greaterThan(b)) {
             CountdownNumber difference = a.subtract(b);
             difference.addToCalculationHistory(a + " - " + b + " = " + difference);
             list.add(difference);
         }
 
-        if (a.intValue() > b.intValue() && a.intValue() % b.intValue() == 0) {
+        if (a.greaterThan(b) && a.intValue() % b.intValue() == 0) {
             CountdownNumber quotient = a.divide(b);
             quotient.addToCalculationHistory(a + " / " + b + " = " + quotient);
             list.add(quotient);
