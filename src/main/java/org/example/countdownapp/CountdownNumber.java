@@ -3,9 +3,12 @@ package org.example.countdownapp;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents a number in the Countdown Game. Saves the operation history within the state so it is able to be returned.
+ */
 public class CountdownNumber extends Number {
     private final long value;
-    private List<String> calculationHistory = new ArrayList<>();
+    private final List<String> calculationHistory = new ArrayList<>();
 
     public CountdownNumber(long value) {
         this.value = value;
