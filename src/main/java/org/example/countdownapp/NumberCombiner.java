@@ -6,8 +6,14 @@ import org.paukov.combinatorics3.IGenerator;
 import java.util.*;
 
 public class NumberCombiner {
-    static private int a = 1, b = 2, c = 3, d = 4, e = 5, f = 6;
-    static private int target = 140;
+    static private CountdownNumber
+            a = new CountdownNumber(1),
+            b = new CountdownNumber(2),
+            c = new CountdownNumber(25),
+            d = new CountdownNumber(100),
+            e = new CountdownNumber(75),
+            f = new CountdownNumber(50);
+    static private CountdownNumber target = new CountdownNumber(940);
 
     public static void main(String[] args) {
 
@@ -23,26 +29,25 @@ public class NumberCombiner {
 
          */
 
-        // abcdef(a, b, c, d, e, f);
-        // ab_cd_ef(a, b, c, d, e, f);
-        // a_bc_d_ef(a, b, c, d, e, f);
-        // ab_c_de_f(a, b, c, d, e, f);
-        // a_bc_de_f(a, b, c, d, e, f);
-        // ab_cd_e_f(a, b, c, d, e, f);
+
+        abcdef(a, b, c, d, e, f);
+        ab_cd_ef(a, b, c, d, e, f);
+        a_bc_d_ef(a, b, c, d, e, f);
+        ab_c_de_f(a, b, c, d, e, f);
+        a_bc_de_f(a, b, c, d, e, f);
+        ab_cd_e_f(a, b, c, d, e, f);
         ab_c_d_ef(a, b, c, d, e, f);
     }
 
-    public static void abcdef(int a, int b, int c, int d, int e, int f) {
-        IGenerator<List<Integer>> permutations = Generator.permutation(a, b, c, d, e, f).simple();
+    public static void abcdef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
+        IGenerator<List<CountdownNumber>> permutations = Generator.permutation(a, b, c, d, e, f).simple();
 
-        for (List<Integer> list : permutations) {
-            for(List<Integer> step1Result : reduce(list)) {
-                for (List<Integer> step2Result : reduce(step1Result)) {
-                    for (List<Integer> step3Result : reduce(step2Result)) {
-                        for (List<Integer> step4Result: reduce(step3Result)) {
-                           for (int answer : calculate(step4Result.getFirst(), step4Result.get(1))) {
-                               System.out.println(answer);
-                            }
+        for (List<CountdownNumber> list : permutations) {
+            for (List<CountdownNumber> firstLevel: reduce(list)) {
+                for(List<CountdownNumber> secondLevel : reduce(firstLevel)) {
+                    for (List<CountdownNumber> thirdLevel: reduce(secondLevel)) {
+                        for (List<CountdownNumber> fourthLevel : reduce(thirdLevel)) {
+                            calculate(fourthLevel.getFirst(), fourthLevel.getLast());
                         }
                     }
                 }
@@ -51,13 +56,13 @@ public class NumberCombiner {
 
     }
 
-    public static void ab_cd_ef(int a, int b, int c, int d, int e, int f) {
-        IGenerator<List<Integer>> permutations = Generator.permutation(a, b, c, d, e, f).simple();
+    public static void ab_cd_ef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
+        IGenerator<List<CountdownNumber>> permutations = Generator.permutation(a, b, c, d, e, f).simple();
 
-        for(List<Integer> permutation : permutations) {
-            List<Integer> firstTwo = new ArrayList<>();
-            List<Integer> secondTwo = new ArrayList<>();
-            List<Integer> thirdTwo = new ArrayList<>();
+        for(List<CountdownNumber> permutation : permutations) {
+            List<CountdownNumber> firstTwo = new ArrayList<>();
+            List<CountdownNumber> secondTwo = new ArrayList<>();
+            List<CountdownNumber> thirdTwo = new ArrayList<>();
             firstTwo.add(permutation.getFirst());
             firstTwo.add(permutation.get(1));
             secondTwo.add(permutation.get(2));
@@ -65,122 +70,113 @@ public class NumberCombiner {
             thirdTwo.add(permutation.get(4));
             thirdTwo.add(permutation.get(5));
 
-            List<Integer> reduced = reduce(firstTwo, secondTwo, thirdTwo);
-            System.out.println(reduced);
+            List<CountdownNumber> reduced = reduce(firstTwo, secondTwo, thirdTwo);
         }
     }
 
-    public static void a_bc_d_ef(int a, int b, int c, int d, int e, int f) {
-        for (List<Integer> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<Integer> bc = new ArrayList<>();
-            List<Integer> ef = new ArrayList<>();
+    public static void a_bc_d_ef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
+        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
+            List<CountdownNumber> bc = new ArrayList<>();
+            List<CountdownNumber> ef = new ArrayList<>();
             bc.add(permutation.get(1));
             bc.add(permutation.get(2));
             ef.add(permutation.get(4));
             ef.add(permutation.get(5));
 
-            List<Integer> reduced = reduce(permutation.getFirst(), bc, permutation.get(3), ef);
-            System.out.println(reduced);
+            List<CountdownNumber> reduced = reduce(permutation.getFirst(), bc, permutation.get(3), ef);
         }
     }
 
-    public static void ab_c_de_f(int a, int b, int c, int d, int e, int f) {
-        for (List<Integer> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<Integer> ab = new ArrayList<>();
-            List<Integer> de = new ArrayList<>();
+    public static void ab_c_de_f(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
+        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
+            List<CountdownNumber> ab = new ArrayList<>();
+            List<CountdownNumber> de = new ArrayList<>();
             ab.add(permutation.get(1));
             ab.add(permutation.get(2));
             de.add(permutation.get(4));
             de.add(permutation.get(5));
 
-            List<Integer> reduced = reduce(permutation.get(1), ab, permutation.get(2), de);
-            System.out.println(reduced);
+            List<CountdownNumber> reduced = reduce(ab, permutation.get(2), de, permutation.getLast());
         }
     }
 
-    public static void a_bc_de_f(int a, int b, int c, int d, int e, int f) {
-        for (List<Integer> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<Integer> bc = new ArrayList<>();
-            List<Integer> de = new ArrayList<>();
+    public static void a_bc_de_f(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
+        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
+            List<CountdownNumber> bc = new ArrayList<>();
+            List<CountdownNumber> de = new ArrayList<>();
             bc.add(permutation.get(1));
             bc.add(permutation.get(2));
             de.add(permutation.get(3));
             de.add(permutation.get(4));
 
-            List<Integer> reduced = reduce(permutation.getFirst(), bc, de, permutation.getLast());
-            System.out.println(reduced);
+            List<CountdownNumber> reduced = reduce(permutation.getFirst(), bc, de, permutation.getLast());
         }
     }
 
-    public static void ab_cd_e_f(int a, int b, int c, int d, int e, int f) {
-        for (List<Integer> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<Integer> ab = new ArrayList<>();
-            List<Integer> cd = new ArrayList<>();
+    public static void ab_cd_e_f(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
+        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
+            List<CountdownNumber> ab = new ArrayList<>();
+            List<CountdownNumber> cd = new ArrayList<>();
             ab.add(permutation.getFirst());
             ab.add(permutation.get(1));
             cd.add(permutation.get(2));
             cd.add(permutation.get(3));
 
-            List<Integer> reduced = reduce(ab, cd, permutation.get(4), permutation.getLast());
-            System.out.println(reduced);
+            List<CountdownNumber> reduced = reduce(ab, cd, permutation.get(4), permutation.getLast());
         }
     }
 
-    public static void ab_c_d_ef(int a, int b, int c, int d, int e, int f) {
-        for (List<Integer> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
-            List<Integer> ab = new ArrayList<>();
-            List<Integer> cd = new ArrayList<>();
+    public static void ab_c_d_ef(CountdownNumber a, CountdownNumber b, CountdownNumber c, CountdownNumber d, CountdownNumber e, CountdownNumber f) {
+        for (List<CountdownNumber> permutation: Generator.permutation(a, b, c, d, e, f).simple()) {
+            List<CountdownNumber> ab = new ArrayList<>();
+            List<CountdownNumber> ef = new ArrayList<>();
+            ab.add(permutation.getFirst());
             ab.add(permutation.get(1));
-            ab.add(permutation.get(2));
-            cd.add(permutation.get(4));
-            cd.add(permutation.get(5));
+            ef.add(permutation.get(4));
+            ef.add(permutation.getLast());
 
-            List<Integer> reduced = reduce(ab, cd, permutation.get(4), permutation.getLast());
-            System.out.println(reduced);
+            List<CountdownNumber> reduced = reduce(ab, permutation.get(2), permutation.get(3), ef);
         }
     }
 
-    public static List<List<Integer>> reduce(List<Integer> list) {
-        List<Integer> listCopy = new ArrayList<>(list);
-        List<List<Integer>> output = new ArrayList<>();
+    public static List<List<CountdownNumber>> reduce(List<CountdownNumber> list) {
 
-        int first = listCopy.getFirst();
-        int second = listCopy.get(1);
+        List<CountdownNumber> firstGroup = calculate(list.removeFirst(), list.remove(1));
 
-        listCopy.removeFirst();
-        listCopy.remove(1);
+        List<List<CountdownNumber>> timelines = new ArrayList<>();
 
-        List<Integer> calculatedPair = calculate(first, second);
-
-        for (int result: calculatedPair) {
-            List<Integer> timeline = new ArrayList<>(listCopy);
-            timeline.add(1, result);
-            output.add(timeline);
+        for (CountdownNumber answer : firstGroup) {
+            List<CountdownNumber> timeLine = new ArrayList<>();
+            timeLine.add(answer);
+            timeLine.addAll(list);
+            timelines.add(timeLine);
         }
-        return output;
+
+        return timelines;
+
     }
 
-    public static List<Integer> reduce(List<Integer> ab, List<Integer> cd, List<Integer> ef) {
+    public static List<CountdownNumber> reduce(List<CountdownNumber> ab, List<CountdownNumber> cd, List<CountdownNumber> ef) {
         if (ab.size() > 2 || cd.size() > 2 || ef.size() > 2) {
             throw new ArrayIndexOutOfBoundsException("There should only be three lists containing two elements each");
         }
 
-        List<Integer> firstGroupAnswers = calculate(ab.getFirst(), ab.get(1));
-        List<Integer> secondGroupAnswers = calculate(cd.getFirst(), cd.get(1));
-        List<Integer> thirdGroupAnswers = calculate(ef.getFirst(), ef.get(1));
+        List<CountdownNumber> firstGroupAnswers = calculate(ab.getFirst(), ab.get(1));
+        List<CountdownNumber> secondGroupAnswers = calculate(cd.getFirst(), cd.get(1));
+        List<CountdownNumber> thirdGroupAnswers = calculate(ef.getFirst(), ef.get(1));
 
-        List<Integer> newFirstGroup = new ArrayList<>();
+        List<CountdownNumber> newFirstGroup = new ArrayList<>();
 
-        for (int answer1 : firstGroupAnswers) {
-            for (int answer2 : secondGroupAnswers) {
+        for (CountdownNumber answer1 : firstGroupAnswers) {
+            for (CountdownNumber answer2 : secondGroupAnswers) {
                 newFirstGroup.addAll(calculate(answer1, answer2));
             }
         }
 
-        List<Integer> finalList = new ArrayList<>();
+        List<CountdownNumber> finalList = new ArrayList<>();
 
-        for (int answer1 : newFirstGroup) {
-            for (int answer2 : thirdGroupAnswers) {
+        for (CountdownNumber answer1 : newFirstGroup) {
+            for (CountdownNumber answer2 : thirdGroupAnswers) {
                 finalList.addAll(calculate(answer1, answer2));
             }
         }
@@ -189,148 +185,148 @@ public class NumberCombiner {
 
     }
 
-    public static List<Integer> reduce(int a, List<Integer> bc, int d, List<Integer> ef) {
+    public static List<CountdownNumber> reduce(CountdownNumber a, List<CountdownNumber> bc, CountdownNumber d, List<CountdownNumber> ef) {
         if (bc.size() > 2 || ef.size() > 2) {
             throw new IndexOutOfBoundsException("Arguments for bc and ef should be lists of size two");
         }
 
-        List<Integer> firstGroup = calculate(bc.getFirst(), bc.get(1));
-        List<Integer> secondGroup = calculate(ef.getFirst(), bc.get(1));
+        List<CountdownNumber> firstGroup = calculate(bc.getFirst(), bc.get(1));
+        List<CountdownNumber> secondGroup = calculate(ef.getFirst(), ef.get(1));
 
-        List<Integer> newFirstGroup = new ArrayList<>();
-        List<Integer> newSecondGroup = new ArrayList<>();
+        List<CountdownNumber> newFirstGroup = new ArrayList<>();
+        List<CountdownNumber> newSecondGroup = new ArrayList<>();
 
-        for (int answer : firstGroup) {
+        for (CountdownNumber answer : firstGroup) {
             newFirstGroup.addAll(calculate(answer, a));
         }
 
-        for (int answer: secondGroup) {
+        for (CountdownNumber answer: secondGroup) {
             newSecondGroup.addAll(calculate(answer, d));
         }
 
-        List<Integer> finalList = new ArrayList<>();
+        List<CountdownNumber> finalList = new ArrayList<>();
 
-        for (int answer1 : newFirstGroup) {
-            for (int answer2 : newSecondGroup) {
+        for (CountdownNumber answer1 : newFirstGroup) {
+            for (CountdownNumber answer2 : newSecondGroup) {
                 finalList.addAll(calculate(answer1, answer2));
             }
         }
         return finalList;
     }
 
-    public static List<Integer> reduce(List<Integer> ab, int c, List<Integer> de, int f) {
+    public static List<CountdownNumber> reduce(List<CountdownNumber> ab, CountdownNumber c, List<CountdownNumber> de, CountdownNumber f) {
         if (ab.size() > 2 || de.size() > 2) {
             throw new IndexOutOfBoundsException("Arguments for ab and de should be lists of size two");
         }
 
-        List<Integer> firstGroup = calculate(ab.getFirst(), ab.get(1));
-        List<Integer> secondGroup = calculate(de.getFirst(), de.get(1));
+        List<CountdownNumber> firstGroup = calculate(ab.getFirst(), ab.get(1));
+        List<CountdownNumber> secondGroup = calculate(de.getFirst(), de.get(1));
 
-        List<Integer> newFirstGroup = new ArrayList<>();
-        List<Integer> newSecondGroup = new ArrayList<>();
+        List<CountdownNumber> newFirstGroup = new ArrayList<>();
+        List<CountdownNumber> newSecondGroup = new ArrayList<>();
 
-        for (int answer : firstGroup) {
+        for (CountdownNumber answer : firstGroup) {
             newFirstGroup.addAll(calculate(answer, c));
         }
 
-        for (int answer: secondGroup) {
+        for (CountdownNumber answer: secondGroup) {
             newSecondGroup.addAll(calculate(answer, f));
         }
 
-        List<Integer> finalList = new ArrayList<>();
+        List<CountdownNumber> finalList = new ArrayList<>();
 
-        for (int answer1 : newFirstGroup) {
-            for (int answer2 : newSecondGroup) {
+        for (CountdownNumber answer1 : newFirstGroup) {
+            for (CountdownNumber answer2 : newSecondGroup) {
                 finalList.addAll(calculate(answer1, answer2));
             }
         }
         return finalList;
     }
 
-    public static List<Integer> reduce(int a, List<Integer> bc, List<Integer> de, int f) {
+    public static List<CountdownNumber> reduce(CountdownNumber a, List<CountdownNumber> bc, List<CountdownNumber> de, CountdownNumber f) {
         if (bc.size() > 2 || de.size() > 2) {
             throw new IndexOutOfBoundsException("Arguments for bc and de should be lists of size two");
         }
 
-        List<Integer> firstGroup = calculate(bc.getFirst(), bc.get(1));
-        List<Integer> secondGroup = calculate(de.getFirst(), de.get(1));
+        List<CountdownNumber> firstGroup = calculate(bc.getFirst(), bc.get(1));
+        List<CountdownNumber> secondGroup = calculate(de.getFirst(), de.get(1));
 
-        List<Integer> newFirstGroup = new ArrayList<>();
-        List<Integer> newSecondGroup = new ArrayList<>();
+        List<CountdownNumber> newFirstGroup = new ArrayList<>();
+        List<CountdownNumber> newSecondGroup = new ArrayList<>();
 
-        for (int answer : firstGroup) {
+        for (CountdownNumber answer : firstGroup) {
             newFirstGroup.addAll(calculate(answer, a));
         }
 
-        for (int answer: secondGroup) {
+        for (CountdownNumber answer: secondGroup) {
             newSecondGroup.addAll(calculate(answer, f));
         }
 
-        List<Integer> finalList = new ArrayList<>();
+        List<CountdownNumber> finalList = new ArrayList<>();
 
-        for (int answer1 : newFirstGroup) {
-            for (int answer2 : newSecondGroup) {
+        for (CountdownNumber answer1 : newFirstGroup) {
+            for (CountdownNumber answer2 : newSecondGroup) {
                 finalList.addAll(calculate(answer1, answer2));
             }
         }
         return finalList;
     }
 
-    public static List<Integer> reduce(List<Integer> ab, List<Integer> cd, int e, int f) {
+    public static List<CountdownNumber> reduce(List<CountdownNumber> ab, List<CountdownNumber> cd, CountdownNumber e, CountdownNumber f) {
         if (ab.size() > 2 || cd.size() > 2) {
             throw new IndexOutOfBoundsException("Arguments for ab and cd should be lists of size two");
         }
 
-        List<Integer> firstGroup = calculate(ab.getFirst(), ab.get(1));
-        List<Integer> secondGroup = calculate(cd.getFirst(), cd.get(1));
+        List<CountdownNumber> firstGroup = calculate(ab.getFirst(), ab.get(1));
+        List<CountdownNumber> secondGroup = calculate(cd.getFirst(), cd.get(1));
 
-        List<Integer> newFirstGroup = new ArrayList<>();
+        List<CountdownNumber> newFirstGroup = new ArrayList<>();
 
-        for (int answer1 : firstGroup) {
-            for (int answer2 : secondGroup) {
+        for (CountdownNumber answer1 : firstGroup) {
+            for (CountdownNumber answer2 : secondGroup) {
                 newFirstGroup.addAll(calculate(answer1, answer2));
             }
         }
 
-        List<Integer> newSecondGroup = new ArrayList<>();
+        List<CountdownNumber> newSecondGroup = new ArrayList<>();
 
-        for (int answer : newFirstGroup) {
+        for (CountdownNumber answer : newFirstGroup) {
             newSecondGroup.addAll(calculate(answer, e));
         }
 
-        List<Integer> finalList = new ArrayList<>();
+        List<CountdownNumber> finalList = new ArrayList<>();
 
-        for (int answer: newSecondGroup) {
+        for (CountdownNumber answer: newSecondGroup) {
             finalList.addAll(calculate(answer, f));
         }
 
         return finalList;
     }
 
-    public static List<Integer> reduce(List<Integer> ab, int c, int d, List<Integer> ef) {
+    public static List<CountdownNumber> reduce(List<CountdownNumber> ab, CountdownNumber c, CountdownNumber d, List<CountdownNumber> ef) {
         if (ab.size() > 2 || ef.size() > 2) {
             throw new IndexOutOfBoundsException("Arguments for ab and ef should be lists of size two");
         }
 
-        List<Integer> firstGroup = calculate(ab.getFirst(), ab.get(1));
-        List<Integer> lastGroup = calculate(ef.getFirst(), ef.get(1));
+        List<CountdownNumber> firstGroup = calculate(ab.getFirst(), ab.get(1));
+        List<CountdownNumber> lastGroup = calculate(ef.getFirst(), ef.get(1));
 
-        List<Integer> newFirstGroup = new ArrayList<>();
+        List<CountdownNumber> newFirstGroup = new ArrayList<>();
 
-        for (int answer : firstGroup) {
+        for (CountdownNumber answer : firstGroup) {
             newFirstGroup.addAll(calculate(answer, c));
         }
 
-        List<Integer> newSecondGroup = new ArrayList<>();
+        List<CountdownNumber> newSecondGroup = new ArrayList<>();
 
-        for (int answer : newFirstGroup) {
+        for (CountdownNumber answer : newFirstGroup) {
             newSecondGroup.addAll(calculate(answer, d));
         }
 
-        List<Integer> finalList = new ArrayList<>();
+        List<CountdownNumber> finalList = new ArrayList<>();
 
-        for (int answer1: newSecondGroup) {
-            for (int answer2: lastGroup) {
+        for (CountdownNumber answer1: newSecondGroup) {
+            for (CountdownNumber answer2: lastGroup) {
                 finalList.addAll(calculate(answer1, answer2));
             }
         }
@@ -339,29 +335,36 @@ public class NumberCombiner {
     }
 
 
-    public static List<Integer> calculate(int a, int b) {
+    public static List<CountdownNumber> calculate(CountdownNumber a, CountdownNumber b) {
 
-        ArrayList<Integer> list = new ArrayList<>();
-        int sum = a + b;
-        int product = a * b;
+        ArrayList<CountdownNumber> list = new ArrayList<>();
+        CountdownNumber sum = a.add(b);
+        sum.addToCalculationHistory(a + " + " + b + " = " + sum);
+        CountdownNumber product = a.multiply(b);
+        product.addToCalculationHistory(a + " x " + b + " = " + product);
 
         list.add(sum);
         list.add(product);
 
-        if (a > b) {
-            int difference = a - b;
+        if (a.longValue() > b.longValue()) {
+            CountdownNumber difference = a.subtract(b);
+            difference.addToCalculationHistory(a + " - " + b + " = " + difference);
             list.add(difference);
         }
 
-        if (a > b && a % b == 0) {
-            int quotient = a / b;
+        if (a.intValue() > b.intValue() && a.intValue() % b.intValue() == 0) {
+            CountdownNumber quotient = a.divide(b);
+            quotient.addToCalculationHistory(a + " / " + b + " = " + quotient);
             list.add(quotient);
         }
 
-        if (list.contains(target)) {
-            System.out.println("I found the target");
+        for (CountdownNumber answer : list) {
+            if (answer.equals(target)) {
+                System.out.println(answer.getCalculationHistory());
+            }
         }
 
         return list;
     }
 }
+
