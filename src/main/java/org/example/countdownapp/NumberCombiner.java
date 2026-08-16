@@ -17,8 +17,10 @@ public class NumberCombiner {
 
     static void main() {
 
+        // Permutations for the list of numbers. This is so they appear in any order and the math can happen in any order
         IGenerator<List<CountdownNumber>> permutations = Generator.permutation(a, b, c, d, e, f).simple();
 
+        // For each permutation, we need to check each grouping pattern. More patterns can be added as needed
         for (List<CountdownNumber> list : permutations) {
             a_b_c_d_e_f(list);
             ab_cd_ef(list);
@@ -30,6 +32,11 @@ public class NumberCombiner {
         }
     }
 
+    /**
+     * This is the "rolling total" pattern. The numbers snowball from right to left to find one big total,
+     * and all math is done from the previous calculations
+     * @param list This takes in a permutation list of the countdown numbers
+     */
     public static void a_b_c_d_e_f(List<CountdownNumber> list) {
 
         for (List<CountdownNumber> firstLevel: reduce(list)) {
@@ -44,6 +51,11 @@ public class NumberCombiner {
 
     }
 
+    /**
+     * This is the "All Twos" pattern. There are three separate calculations done,
+     * and then each calculation is then combined from right to left
+     * @param list This takes in a permutation list of the countdown numbers
+     */
     public static void ab_cd_ef(List<CountdownNumber> list) {
 
         List<CountdownNumber> ab = new ArrayList<>();
@@ -76,6 +88,9 @@ public class NumberCombiner {
 
     }
 
+    /** This is one of the "Offset Patterns". Two groups of two are combined with single outliers
+     * @param list This is a permutation list of all the countdown numbers
+     */
     public static void a_bc_d_ef(List<CountdownNumber> list) {
         List<CountdownNumber> bc = new ArrayList<>();
         List<CountdownNumber> ef = new ArrayList<>();
@@ -105,6 +120,9 @@ public class NumberCombiner {
         }
     }
 
+    /** This is one of the "Offset Patterns". Two groups of two are combined with single outliers
+     * @param list This is a permutation list of all the countdown numbers
+     */
     public static void ab_c_de_f(List<CountdownNumber> list) {
         List<CountdownNumber> ab = new ArrayList<>();
         List<CountdownNumber> de = new ArrayList<>();
@@ -134,6 +152,12 @@ public class NumberCombiner {
         }
     }
 
+
+    /**
+     * This is the "doubles in the middle" pattern. Separate calculations are performed in the middle and combined
+     * with singles as rolling totals on each end.
+     * @param list This is a permutation list of all of the countdown numbers
+     */
     public static void a_bc_de_f(List<CountdownNumber> list) {
         List<CountdownNumber> bc = new ArrayList<>();
         List<CountdownNumber> de = new ArrayList<>();
@@ -163,6 +187,12 @@ public class NumberCombiner {
         }
     }
 
+
+    /**
+     * This is the "doubles in the front" pattern. Two doubles are put on the front and combined with
+     * singles on the outside. This pattern exists because not all the numbers need to be used.
+     * @param list This is a permutation list of all of the countdown numbers
+     */
     public static void ab_cd_e_f(List<CountdownNumber> list) {
         List<CountdownNumber> ab = new ArrayList<>();
         List<CountdownNumber> cd = new ArrayList<>();
@@ -193,6 +223,11 @@ public class NumberCombiner {
         }
     }
 
+    /**
+     * This is the "doubles on the either end" pattern. Two doubles are put on the front and the end and combined with
+     * singles on the inside. This pattern exists because not all the numbers need to be used.
+     * @param list This is a permutation list of all of the countdown numbers
+     */
     public static void ab_c_d_ef(List<CountdownNumber> list) {
         List<CountdownNumber> ab = new ArrayList<>();
         List<CountdownNumber> ef = new ArrayList<>();
@@ -224,6 +259,10 @@ public class NumberCombiner {
 
     }
 
+    /**
+     * @param list Takes in a list that needs reduced
+     * @return A list of lists that all have one less length than the one started with
+     */
     public static List<List<CountdownNumber>> reduce(List<CountdownNumber> list) {
         List<CountdownNumber> listCopy = new ArrayList<>(list);
 
@@ -242,6 +281,11 @@ public class NumberCombiner {
 
     }
 
+    /**
+     * @param a First operand
+     * @param b Second operand
+     * @return A list of answers for each of the possible successful operations
+     */
     public static List<CountdownNumber> calculate(CountdownNumber a, CountdownNumber b) {
 
         ArrayList<CountdownNumber> list = new ArrayList<>();
