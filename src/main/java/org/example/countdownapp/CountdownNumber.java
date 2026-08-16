@@ -3,7 +3,7 @@ package org.example.countdownapp;
 import java.util.ArrayList;
 import java.util.List;
 
-class CountdownNumber extends Number {
+public class CountdownNumber extends Number {
     private final long value;
     private List<String> calculationHistory = new ArrayList<>();
 
