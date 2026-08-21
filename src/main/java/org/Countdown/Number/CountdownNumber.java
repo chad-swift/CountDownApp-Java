@@ -1,4 +1,4 @@
-package org.example.countdownapp;
+package org.Countdown.Number;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -118,6 +118,10 @@ public class CountdownNumber extends Number {
 
         return this.longValue() < other.longValue();
 
+    }
+
+    public long modulus(CountdownNumber other) {
+        return this.longValue() % other.longValue();
     }
 
     public List<String> getCalculationHistory() {
