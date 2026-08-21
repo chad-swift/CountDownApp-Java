@@ -1,5 +1,6 @@
-package org.example.countdownapp;
+package org.Countdown;
 
+import org.Countdown.Number.CountdownNumber;
 import org.paukov.combinatorics3.Generator;
 import org.paukov.combinatorics3.IGenerator;
 
@@ -7,13 +8,13 @@ import java.util.*;
 
 public class NumberCombiner {
     static final private CountdownNumber
-            a = new CountdownNumber(25),
-            b = new CountdownNumber(4),
+            a = new CountdownNumber(75),
+            b = new CountdownNumber(9),
             c = new CountdownNumber(6),
-            d = new CountdownNumber(8),
-            e = new CountdownNumber(2),
-            f = new CountdownNumber(10);
-    static final private CountdownNumber target = new CountdownNumber(743);
+            d = new CountdownNumber(4),
+            e = new CountdownNumber(10),
+            f = new CountdownNumber(5);
+    static final private CountdownNumber target = new CountdownNumber(903);
 
     static void main() {
 
@@ -289,21 +290,20 @@ public class NumberCombiner {
     public static List<CountdownNumber> calculate(CountdownNumber a, CountdownNumber b) {
 
         ArrayList<CountdownNumber> list = new ArrayList<>();
-        CountdownNumber sum = a.add(b);
-        sum.addToCalculationHistory(a + " + " + b + " = " + sum);
-        CountdownNumber product = a.multiply(b);
-        product.addToCalculationHistory(a + " x " + b + " = " + product);
-
-        list.add(sum);
-        list.add(product);
 
         if (a.greaterThan(b)) {
+            CountdownNumber sum = a.add(b);
+            sum.addToCalculationHistory(a + " + " + b + " = " + sum);
+            list.add(sum);
+            CountdownNumber product = a.multiply(b);
+            product.addToCalculationHistory(a + " x " + b + " = " + product);
+            list.add(product);
             CountdownNumber difference = a.subtract(b);
             difference.addToCalculationHistory(a + " - " + b + " = " + difference);
             list.add(difference);
         }
 
-        if (a.greaterThan(b) && a.intValue() % b.intValue() == 0) {
+        if (a.greaterThan(b) && a.longValue() % b.longValue() == 0) {
             CountdownNumber quotient = a.divide(b);
             quotient.addToCalculationHistory(a + " / " + b + " = " + quotient);
             list.add(quotient);

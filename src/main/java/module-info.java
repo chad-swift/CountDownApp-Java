@@ -4,6 +4,10 @@ module org.example.countdownapp {
     requires combinatoricslib3;
 
 
-    opens org.example.countdownapp to javafx.fxml;
-    exports org.example.countdownapp;
+    opens org.Countdown to javafx.fxml;
+    exports org.Countdown;
+    exports org.Countdown.Grouping;
+    opens org.Countdown.Grouping to javafx.fxml;
+    exports org.Countdown.Number;
+    opens org.Countdown.Number to javafx.fxml;
 }
