@@ -1,4 +1,4 @@
-package org.example.countdownapp;
+package org.Countdown;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

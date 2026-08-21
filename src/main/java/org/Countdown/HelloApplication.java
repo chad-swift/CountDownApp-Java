@@ -1,4 +1,4 @@
-package org.example.countdownapp;
+package org.Countdown;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
