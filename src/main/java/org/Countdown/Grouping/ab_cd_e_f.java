@@ -4,44 +4,52 @@ import org.Countdown.Number.CountdownNumber;
 
 import java.util.ArrayList;
 import java.util.List;
-import static org.Countdown.Number.CountDownNumberCalculator.calculate;
 
 public class ab_cd_e_f extends GroupingPatternOnSix {
     @Override
     public void execute() {
         List<CountdownNumber> list = getSearchList();
 
-        List<CountdownNumber> ab = new ArrayList<>();
-        List<CountdownNumber> cd = new ArrayList<>();
-        CountdownNumber e;
-        CountdownNumber f;
+        AnswerTuple<CountdownNumber> ab = calculateAndCheckForTarget(
+                list.getFirst(),
+                list.get(1));
+        AnswerTuple<CountdownNumber> cd = calculateAndCheckForTarget(
+                list.get(2),
+                list.get(3)
+        );
+        CountdownNumber e =
+                list.get(4);
+        CountdownNumber f =
+                list.getLast();
 
-        ab.add(list.getFirst());
-        ab.add(list.get(1));
-        cd.add(list.get(2));
-        cd.add(list.get(3));
-        e = list.get(4);
-        f = list.getLast();
+        if (ab.isAnswerFound() || cd.isAnswerFound()) {
+            return;
+        }
 
-        List<CountdownNumber> firstGroup = calculate(ab.getFirst(), ab.get(1));
-        List<CountdownNumber> secondGroup = calculate(cd.getFirst(), cd.get(1));
+        List<CountdownNumber> abcd = new ArrayList<>();
 
-        List<CountdownNumber> newFirstGroup = new ArrayList<>();
-
-        for (CountdownNumber answer1 : firstGroup) {
-            for (CountdownNumber answer2 : secondGroup) {
-                newFirstGroup.addAll(calculate(answer1, answer2));
+        for (CountdownNumber answer1 : ab.getListAnswers()) {
+            for (CountdownNumber answer2 : cd.getListAnswers()) {
+                AnswerTuple<CountdownNumber> combined = calculateAndCheckForTarget(answer1, answer2);
+                if (combined.isAnswerFound()) {
+                    return;
+                }
+                abcd.addAll(combined.getListAnswers());
             }
         }
 
-        List<CountdownNumber> newSecondGroup = new ArrayList<>();
+        List<CountdownNumber> abcde = new ArrayList<>();
 
-        for (CountdownNumber answer : newFirstGroup) {
-            newSecondGroup.addAll(calculate(answer, e));
+        for (CountdownNumber answer : abcd) {
+            AnswerTuple<CountdownNumber> combined = calculateAndCheckForTarget(answer, e);
+            if (combined.isAnswerFound()) {
+                return;
+            }
+            abcde.addAll(combined.getListAnswers());
         }
 
-        for (CountdownNumber answer: newSecondGroup) {
-            calculate(answer, f);
+        for (CountdownNumber answer: abcde) {
+            calculateAndCheckForTarget(answer, f);
         }
     }
 }

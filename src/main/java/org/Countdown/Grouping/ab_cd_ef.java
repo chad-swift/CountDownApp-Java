@@ -5,42 +5,45 @@ import org.Countdown.Number.CountdownNumber;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.Countdown.Number.CountDownNumberCalculator.calculate;
-
 public class ab_cd_ef extends GroupingPatternOnSix {
 
     @Override
     public void execute() {
         List<CountdownNumber> list = getSearchList();
 
-        List<CountdownNumber> ab = new ArrayList<>();
-        List<CountdownNumber> cd = new ArrayList<>();
-        List<CountdownNumber> ef = new ArrayList<>();
+        AnswerTuple<CountdownNumber> ab = calculateAndCheckForTarget(
+                list.getFirst(),
+                list.get(1)
+        );
+        AnswerTuple<CountdownNumber> cd = calculateAndCheckForTarget(
+                list.get(2),
+                list.get(3)
+        );
+        AnswerTuple<CountdownNumber> ef = calculateAndCheckForTarget(
+                list.get(4),
+                list.getLast()
+        );
 
-        ab.add(list.getFirst());
-        ab.add(list.get(1));
-        cd.add(list.get(2));
-        cd.add(list.get(3));
-        ef.add(list.get(4));
-        ef.add(list.get(5));
+        if (ab.isAnswerFound() || cd.isAnswerFound() || ef.isAnswerFound()) {
+            return;
+        }
 
-        List<CountdownNumber> firstGroupAnswers = calculate(ab.getFirst(), ab.get(1));
-        List<CountdownNumber> secondGroupAnswers = calculate(cd.getFirst(), cd.get(1));
-        List<CountdownNumber> thirdGroupAnswers = calculate(ef.getFirst(), ef.get(1));
+        List<CountdownNumber> abcd = new ArrayList<>();
 
-        List<CountdownNumber> newFirstGroup = new ArrayList<>();
-
-        for (CountdownNumber answer1 : firstGroupAnswers) {
-            for (CountdownNumber answer2 : secondGroupAnswers) {
-                newFirstGroup.addAll(calculate(answer1, answer2));
+        for (CountdownNumber answer1 : ab.getListAnswers()) {
+            for (CountdownNumber answer2 : cd.getListAnswers()) {
+                AnswerTuple<CountdownNumber> combined = calculateAndCheckForTarget(answer1, answer2);
+                if (combined.isAnswerFound()){
+                    return;
+                }
+                abcd.addAll(combined.getListAnswers());
             }
         }
 
-        for (CountdownNumber answer1 : newFirstGroup) {
-            for (CountdownNumber answer2 : thirdGroupAnswers) {
-                calculate(answer1, answer2);
+        for (CountdownNumber answer1 : abcd) {
+            for (CountdownNumber answer2 : ef.getListAnswers()) {
+                calculateAndCheckForTarget(answer1, answer2);
             }
         }
-
     }
 }
